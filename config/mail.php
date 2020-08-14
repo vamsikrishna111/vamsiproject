@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_DRIVER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -32,11 +32,12 @@ return [
     |            "postmark", "log", "array"
     |
     */
+   
 
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'driver' => env('MAIL_DRIVER', 'smtp'),
+            'driver' => env('MAIL_MAILER', 'smtp'),
 
             'host' => env('MAIL_HOST', 'smtp.gmail.com'),
             'port' => env('MAIL_PORT', 587),
@@ -73,6 +74,9 @@ return [
             'transport' => 'array',
         ],
     ],
+
+
+  
 
     /*
     |--------------------------------------------------------------------------

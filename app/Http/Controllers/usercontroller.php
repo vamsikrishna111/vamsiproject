@@ -6,7 +6,8 @@ use DB;
 use App\book;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\updatemail;
-
+use App\Mail\deleteemail;
+//php -S 127.0.0.1:8000 -t public/
 
 use Illuminate\Http\Request;
 
@@ -56,7 +57,9 @@ class usercontroller extends Controller
    return redirect('login')->with('success','register succesfully please login!');
 }
 
-public function login(){
+public function login(Request $r){
+    $r->session()->forget('data');
+
     return  view('login');
 }
 public function dashboard(Request $r){
@@ -76,13 +79,15 @@ public function dashboard(Request $r){
         'password' => 'required',
         
     ]);
-    $data= DB::select('select id from admin where email = ? and password=?',[$email,$password]);
+    $data= DB::select('select * from admin where email = ? and password=?',[$email,$password]);
+    
     
     //print_r($data);die();
     if (count($data) == 1) {
         $r->session()->put('data',$data);
-          
-        return view('addbook');
+     
+        return redirect('addbook');
+       // return view('addbook');
  
 }
 else{
@@ -126,7 +131,10 @@ public function forgetpassword(){
     
 
 public function addbook(){
-    return view('addbook');
+  $data=DB::select('select * FROM book INNER JOIN admin on admin.id=book.admin_id');
+
+    return view('addbook',['data'=>$data]);
+
 }
 
     public function insertpopup(){
@@ -141,6 +149,8 @@ public function addbook(){
         $insertbook->price= $request->price;
         $insertbook->quantity = $request->quantity;
         $info=$request->session()->get('data');
+      
+
         $id=$info[0]->id;
         $insertbook->admin_id = $id;
         
@@ -148,8 +158,15 @@ public function addbook(){
               
         //dd($userImage);
         $insertbook->save();
-        // return back()->with('success','image successfully added!');
-         // die('hiiiiiii');
+        //$data=$insertbook;
+        //echo $data['price'];die();
+       
+       // echo $email;die();
+       $data=$request->session()->get('data');
+
+
+         Mail::to($data[0]->email)->send(new updatemail($data));
+
           return redirect('selectbooklist');
         }
 
@@ -188,11 +205,10 @@ public function addbook(){
             
                 $users=book::where('id',[$id])->update(['bookname'=>$request->bookname,'price'=>$request->price,'quantity'=>$request->quantity]);
              //   $data=DB::select('select * FROM book INNER JOIN admin on admin.id=book.admin_id');
-                       //   Mail::to($data[0]->email)->send(new updatemail($data));
+                         Mail::to($data[0]->email)->send(new updatemail($data));
 
              
       
-                //Mail::to($data[0]->email)->send(new updatemail($data));
                 //dd($users);
                      return redirect('selectbooklist');
                }
@@ -203,7 +219,10 @@ public function addbook(){
               // $users=book::where('id',[$id])->delete();
               // echo $users;die();
                //-----------------model------------------------------------
-               
+               $data=$request->session()->get('data');
+
+
+               Mail::to($data[0]->email)->send(new deleteemail($data));
                  return redirect('selectbooklist');
                  }
 

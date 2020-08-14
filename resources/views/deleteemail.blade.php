@@ -6,8 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <p>thank you for add your book</p>
+    <p>thank you for  delete your book</p>
     <h1>gitub repostary link</h1>
     <a>https://github.com/vamsikrishna111/vamsiproject</a>
+
 </body>
 </html>
