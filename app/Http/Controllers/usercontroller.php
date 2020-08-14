@@ -205,7 +205,7 @@ public function addbook(){
             
                 $users=book::where('id',[$id])->update(['bookname'=>$request->bookname,'price'=>$request->price,'quantity'=>$request->quantity]);
              //   $data=DB::select('select * FROM book INNER JOIN admin on admin.id=book.admin_id');
-                         Mail::to($data[0]->email)->send(new updatemail($data));
+                      //   Mail::to($data[0]->email)->send(new updatemail($data));
 
              
       
